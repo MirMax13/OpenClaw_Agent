@@ -25,3 +25,14 @@ class OpenClawAgent:
         self.memory.append({"role": "assistant", "content": assistant_reply})
 
         return assistant_reply
+    
+if __name__ == "__main__":
+    agent = OpenClawAgent(model_name=model_name, agent_name=agent_name, role=agent_role, system_instructions=system_instructions)
+
+    print(f"Welcome to the chat with {agent.agent_name}")
+
+    reply1 = agent.chat("How do I print 'Hello World' in Python?")
+    print(f"Agent: {reply1}")
+
+    reply2 = agent.chat("Can you explain that again?")
+    print(f"Agent: {reply2}")
