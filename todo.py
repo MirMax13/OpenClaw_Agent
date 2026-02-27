@@ -50,3 +50,11 @@ class ToDoManager:
                 return f"Task marked as completed: {task['task']} (ID: {task_id})"
         return f"Task with ID {task_id} not found."
     
+if __name__ == "__main__":
+    manager = ToDoManager()
+
+    print(manager.add_task("Buy groceries"))
+    print(manager.add_task("Finish coding project"))
+    print(manager.list_tasks())
+    print(manager.mark_completed(1))
+    print(manager.list_tasks())
