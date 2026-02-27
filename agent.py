@@ -16,3 +16,12 @@ class OpenClawAgent:
 
         self.memory = ["role: system", f"content: {self.system_prompt}"]
     
+    def chat(self, user_message):
+        self.memory.append({"role": "user", "content": user_message})
+
+        response = ollama.chat(model=self.model_name, messages=self.memory)
+        assistant_reply = response['message']['content']
+
+        self.memory.append({"role": "assistant", "content": assistant_reply})
+
+        return assistant_reply
