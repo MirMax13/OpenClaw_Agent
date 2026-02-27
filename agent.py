@@ -14,7 +14,7 @@ class OpenClawAgent:
 
         self.system_prompt = f"You are {self.agent_name}, acting as a {self.role}. {system_instructions}"
 
-        self.memory = ["role: system", f"content: {self.system_prompt}"]
+        self.memory = [{"role": "system", "content": self.system_prompt}]
     
     def chat(self, user_message):
         self.memory.append({"role": "user", "content": user_message})
