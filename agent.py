@@ -1,4 +1,6 @@
 import ollama
+import json
+from todo import ToDoManager
 
 model_name = "gemma:2b"
 agent_name = "Alex"
@@ -11,6 +13,7 @@ class OpenClawAgent:
         self.model_name = model_name
         self.agent_name = agent_name
         self.role = role
+self.todo = ToDoManager()
 
         self.system_prompt = f"You are {self.agent_name}, acting as a {self.role}. {system_instructions}"
 
