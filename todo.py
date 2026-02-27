@@ -43,6 +43,8 @@ class ToDoManager:
         data = self.load()
         for task in data["tasks"]:
             if task["id"] == task_id:
+                if task["completed"]:
+                    return f"Task with ID {task_id} is already marked as completed."
                 task["completed"] = True
                 self.save(data)
                 return f"Task marked as completed: {task['task']} (ID: {task_id})"
