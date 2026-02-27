@@ -13,3 +13,6 @@ class OpenClawAgent:
         self.role = role
 
         self.system_prompt = f"You are {self.agent_name}, acting as a {self.role}. {system_instructions}"
+
+        self.memory = ["role: system", f"content: {self.system_prompt}"]
+    
