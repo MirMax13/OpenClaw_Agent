@@ -53,6 +53,19 @@ JSON EXAMPLE 2 (Just chatting):
         response = ollama.chat(model=self.model_name, messages=messages_for_llm)
         assistant_reply = response['message']['content']
 
+try:
+            start_idx = assistant_reply.find('{')
+            end_idx = assistant_reply.rfind('}')
+            
+            if start_idx != -1 and end_idx != -1:
+                json_str = assistant_reply[start_idx:end_idx+1]
+                action = json.loads(json_str)
+                
+        except (json.JSONDecodeError, ValueError) as e:
+            print(f"Parse Error JSON: {e}")
+            print(f"Raw assistant reply: {assistant_reply}")
+            return "Ugh, my brain crashed. Could you repeat that?"
+
         self.memory.append({"role": "assistant", "content": assistant_reply})
 
         return assistant_reply
