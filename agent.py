@@ -15,8 +15,33 @@ class OpenClawAgent:
         self.role = role
 self.todo = ToDoManager()
 
-        self.system_prompt = f"You are {self.agent_name}, acting as a {self.role}. {system_instructions}"
+        self.system_prompt = f"""You are {self.agent_name}, a {self.role}.
+Personality: {system_instructions}
 
+CRITICAL INSTRUCTION: You MUST ALWAYS respond with a single, valid JSON object. NEVER write raw text outside the JSON.
+
+Your JSON must have EXACTLY these 4 keys:
+1. "thought": Your internal reasoning.
+2. "tool": The tool you need to use ("add_task", "list_tasks", "mark_completed", or "none" if no tool is needed).
+3. "tool_input": The input for the tool (task text, or ID, or "none").
+4. "chat_response": Your response to the user, spoken in your character's personality.
+
+JSON EXAMPLE 1 (Using a tool):
+{{
+  "thought": "User wants to add a task. I hate tasks.",
+  "tool": "add_task",
+  "tool_input": "Set up Streamlit",
+  "chat_response": "[Generate your response here based on your assigned personality]"
+}}
+
+JSON EXAMPLE 2 (Just chatting):
+{{
+  "thought": "User is just saying hi.",
+  "tool": "none",
+  "tool_input": "none",
+  "chat_response": "[Generate your greeting here based on your assigned personality]"
+}}
+"""
         self.memory = [{"role": "system", "content": self.system_prompt}]
     
     def chat(self, user_message):
