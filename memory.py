@@ -26,8 +26,8 @@ class VectorMemory:
         if not results['documents'] or not results['documents'][0]:
             return "No relevant memories found."
         formatted_results = "Relevant memories:\n"
-        for doc in results['documents'][0]:
-            formatted_results += f"- {doc}\n"
+        for doc, distance in zip(results['documents'][0], results['distances'][0]):
+            formatted_results += f"- [Distance: {distance:.4f}] {doc}\n"
         return formatted_results
     
     def get_all_facts(self):
