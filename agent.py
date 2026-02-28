@@ -61,6 +61,12 @@ try:
                 json_str = assistant_reply[start_idx:end_idx+1]
                 action = json.loads(json_str)
                 
+                tool_name = action.get("tool", "none")
+                tool_input = action.get("tool_input", "none")
+                chat_response = action.get("chat_response", "")
+                thought = action.get("thought", "")
+                
+                print(f"\nThought: {thought}")
         except (json.JSONDecodeError, ValueError) as e:
             print(f"Parse Error JSON: {e}")
             print(f"Raw assistant reply: {assistant_reply}")
