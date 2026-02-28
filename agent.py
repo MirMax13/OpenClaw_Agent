@@ -123,6 +123,48 @@ JSON EXAMPLE 2 (Just chatting):
 
         return assistant_reply
 
+    def trigger_proactivity(self):
+        tasks = self.todo.list_tasks()
+
+        if "no tasks" in tasks.lower() or "[ ]" not in tasks:
+            return None
+        proactive_prompt = f"""[SYSTEM: PROACTIVITY TRIGGER]
+Check your internal state. You have unfinished tasks:
+{tasks}
+
+Initiate a conversation with the user to remind them about these tasks.
+MAINTAIN YOUR PERSONA: Act strictly as a {self.role}.
+
+CRITICAL: You MUST respond in your standard JSON format. Use tool "none" and put your message in "chat_response".
+"""
+        messeges_for_llm = self.memory.copy()
+        messeges_for_llm.append({"role": "system", "content": proactive_prompt})
+
+        response = ollama.chat(model=self.model_name, messages=messeges_for_llm)
+        assistant_reply = response['message']['content']
+
+        try:
+            start_idx = assistant_reply.find('{')
+            end_idx = assistant_reply.rfind('}')
+            
+            if start_idx != -1 and end_idx == -1:
+                assistant_reply += "\n}"
+                end_idx = assistant_reply.rfind('}')
+                print("Warning: Missing closing brace detected in proactivity trigger. Appended closing brace to attempt recovery.")
+
+            if start_idx != -1 and end_idx != -1:
+                json_str = assistant_reply[start_idx:end_idx+1]
+                action = json.loads(json_str)
+                chat_response = action.get("chat_response", "")
+
+                self.memory.append({"role": "assistant", "content": assistant_reply})
+                return chat_response
+        except (json.JSONDecodeError, ValueError) as e:
+            print(f"Parse Error JSON in proactivity trigger: {e}")
+            print(f"Raw assistant reply: {assistant_reply}")
+            return None
+        return None
+
     def clear_memory(self):
         self.memory = [{"role": "system", "content": self.system_prompt}]
     
@@ -151,5 +193,14 @@ if __name__ == "__main__":
     reply2 = agent.chat("Save the fact about my favorite game to memory.")
     print(f"User: ...\nAgent: {reply2}\n")
     
-    reply3 = agent.chat("What game do I like?")
-    print(f"User: ...\nAgent: {reply3}\n")
+    # reply3 = agent.chat("What game do I like?")
+    # print(f"User: ...\nAgent: {reply3}\n")
+
+    spark_message = agent.trigger_proactivity()
+    if spark_message:
+        print(f"\n[Proactivity Triggered]: {spark_message}")
+    else:
+        print("\n[Proactivity Triggered]: No proactive message generated.")
+
+    reply1 = agent.chat("Hi, let's mark task 1 as completed.")
+    print(f"User: Hi, let's mark task 1 as completed.\nAgent: {reply1}\n")
