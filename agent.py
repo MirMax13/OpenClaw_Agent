@@ -18,7 +18,7 @@ class OpenClawAgent:
 
         self.todo = ToDoManager()
         self.searcher = InternetSearchTool()
-self.vector_db = VectorMemory()
+        self.vector_db = VectorMemory()
 
         self.system_prompt = f"""You are {self.agent_name}, a {self.role}.
 Personality: {system_instructions}
@@ -57,7 +57,7 @@ JSON EXAMPLE 2 (Just chatting):
         self.memory = [{"role": "system", "content": self.system_prompt}]
     
     def chat(self, user_message):
-context = self.vector_db.search_facts(user_message)
+        context = self.vector_db.search_facts(user_message)
 
         self.memory.append({"role": "user", "content": user_message})
 
@@ -103,7 +103,7 @@ context = self.vector_db.search_facts(user_message)
                         observation = self.todo.mark_completed(int(tool_input))
                     elif tool_name == "search_internet":
                         observation = self.searcher.search(tool_input)
-elif tool_name == "save_memory":
+                    elif tool_name == "save_memory":
                         observation = self.vector_db.save_fact(tool_input)
                     
                     self.memory.append({"role": "assistant", "content": assistant_reply})
@@ -133,14 +133,23 @@ if __name__ == "__main__":
     agent = OpenClawAgent(model_name = "llama3", role = agent_role, system_instructions=system_instructions, agent_name=agent_name)
     print("--- Agent Tool Test ---")
     
-    reply1 = agent.chat("Hi, how are you?")
-    print(f"User: Hi, how are you?\nAgent: {reply1}\n")
+    # reply1 = agent.chat("Hi, how are you?")
+    # print(f"User: Hi, how are you?\nAgent: {reply1}\n")
     
-    reply2 = agent.chat("Add 'Set up Streamlit' to my tasks.")
-    print(f"User: Add 'Set up Streamlit' to my tasks.\nAgent: {reply2}\n")
+    # reply2 = agent.chat("Add 'Set up Streamlit' to my tasks.")
+    # print(f"User: Add 'Set up Streamlit' to my tasks.\nAgent: {reply2}\n")
     
-    reply3 = agent.chat("Show my tasks.")
-    print(f"User: Show my tasks.\nAgent: {reply3}\n")
+    # reply3 = agent.chat("Show my tasks.")
+    # print(f"User: Show my tasks.\nAgent: {reply3}\n")
 
-    reply4 = agent.chat("What is the current weather in Lviv?")
-    print(f"User: What is the current weather in Lviv?\nAgent: {reply4}\n")
+    # reply4 = agent.chat("What is the current weather in Lviv?")
+    # print(f"User: What is the current weather in Lviv?\nAgent: {reply4}\n")
+
+    reply1 = agent.chat("Hi, my name is Maxym and my favorite game is CS2.")
+    print(f"User: ...\nAgent: {reply1}\n")
+    
+    reply2 = agent.chat("Save the fact about my favorite game to memory.")
+    print(f"User: ...\nAgent: {reply2}\n")
+    
+    reply3 = agent.chat("What game do I like?")
+    print(f"User: ...\nAgent: {reply3}\n")
