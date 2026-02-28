@@ -78,6 +78,14 @@ try:
                     elif tool_name == "mark_completed":
                         observation = self.todo.mark_completed(int(tool_input))
                     
+self.memory.append({"role": "assistant", "content": assistant_reply})
+                    self.memory.append({"role": "system", "content": f"System Tool Result: {observation}"})
+
+                    return f"{chat_response}\n\n[System]: {observation}"
+                
+                self.memory.append({"role": "assistant", "content": assistant_reply})
+                return chat_response
+                
         except (json.JSONDecodeError, ValueError) as e:
             print(f"Parse Error JSON: {e}")
             print(f"Raw assistant reply: {assistant_reply}")
