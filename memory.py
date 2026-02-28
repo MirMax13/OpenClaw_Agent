@@ -13,6 +13,7 @@ class VectorMemory:
             metadatas=[{"source": "agent_decision"}],
             ids=[document_id]
         )
+        return "Fact saved successfully"
 
     def search_facts(self, query, n_results=2):
         if self.collection.count() == 0:
