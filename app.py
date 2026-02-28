@@ -19,7 +19,7 @@ with st.sidebar:
     st.subheader("Agent Persona")
     new_agent_name = st.text_input("Agent Name", value=st.session_state.agent.agent_name)
     new_agent_role = st.text_area("Agent Role", value=st.session_state.agent.role)
-    new_instructions = st.text_area("System Instructions", value=st.session_state.agent.system_prompt)
+    new_instructions = st.text_area("System Instructions", value=st.session_state.agent.system_instructions)
 
     if st.button("Apply and Restart"):
         st.session_state.agent = OpenClawAgent(
