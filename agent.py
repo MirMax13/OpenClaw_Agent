@@ -47,7 +47,10 @@ JSON EXAMPLE 2 (Just chatting):
     def chat(self, user_message):
         self.memory.append({"role": "user", "content": user_message})
 
-        response = ollama.chat(model=self.model_name, messages=self.memory)
+        messages_for_llm = self.memory.copy()
+        messages_for_llm.append({"role": "system", "content": "REMINDER: Output ONLY a valid JSON object. No other text."})
+
+        response = ollama.chat(model=self.model_name, messages=messages_for_llm)
         assistant_reply = response['message']['content']
 
         self.memory.append({"role": "assistant", "content": assistant_reply})
