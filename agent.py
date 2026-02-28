@@ -13,7 +13,7 @@ class OpenClawAgent:
         self.model_name = model_name
         self.agent_name = agent_name
         self.role = role
-self.todo = ToDoManager()
+        self.todo = ToDoManager()
 
         self.system_prompt = f"""You are {self.agent_name}, a {self.role}.
 Personality: {system_instructions}
@@ -53,7 +53,7 @@ JSON EXAMPLE 2 (Just chatting):
         response = ollama.chat(model=self.model_name, messages=messages_for_llm)
         assistant_reply = response['message']['content']
 
-try:
+        try:
             start_idx = assistant_reply.find('{')
             end_idx = assistant_reply.rfind('}')
             
@@ -78,7 +78,7 @@ try:
                     elif tool_name == "mark_completed":
                         observation = self.todo.mark_completed(int(tool_input))
                     
-self.memory.append({"role": "assistant", "content": assistant_reply})
+                    self.memory.append({"role": "assistant", "content": assistant_reply})
                     self.memory.append({"role": "system", "content": f"System Tool Result: {observation}"})
 
                     return f"{chat_response}\n\n[System]: {observation}"
@@ -102,18 +102,14 @@ self.memory.append({"role": "assistant", "content": assistant_reply})
         return self.memory
     
 if __name__ == "__main__":
-    agent = OpenClawAgent(model_name=model_name, agent_name=agent_name, role=agent_role, system_instructions=system_instructions)
-
-    print(f"Welcome to the chat with {agent.agent_name}")
-
-    reply1 = agent.chat("How do I print 'Hello World' in Python?")
-    print(f"Agent: {reply1}")
-
-    memory = agent.get_memory()  # View current memory
-    for msg in memory:
-        print(f"Memory: {msg}")
-
-    agent.clear_memory()  # Clear memory to start fresh
-
-    reply2 = agent.chat("Can you explain that again?")
-    print(f"Agent: {reply2}")
+    agent = OpenClawAgent(role = agent_role, system_instructions=system_instructions, agent_name=agent_name)
+    print("--- Agent Tool Test ---")
+    
+    reply1 = agent.chat("Hi, how are you?")
+    print(f"User: Hi, how are you?\nAgent: {reply1}\n")
+    
+    reply2 = agent.chat("Add 'Set up Streamlit' to my tasks.")
+    print(f"User: Add 'Set up Streamlit' to my tasks.\nAgent: {reply2}\n")
+    
+    reply3 = agent.chat("Show my tasks.")
+    print(f"User: Show my tasks.\nAgent: {reply3}\n")
