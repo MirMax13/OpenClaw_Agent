@@ -27,7 +27,7 @@ CRITICAL INSTRUCTION: You MUST ALWAYS respond with a single, valid JSON object. 
 
 Your JSON must have EXACTLY these 4 keys:
 1. "thought": Your internal reasoning.
-2. "tool": The tool you need to use ("add_task", "list_tasks", "search_internet", or "none").
+2. "tool": The tool you need to use ("add_task", "list_tasks", "search_internet", "save_memory", or "none").
 3. "tool_input": The input for the tool (task text, or ID, or "none").
 4. "chat_response": Your response to the user, spoken in your character's personality.
 
@@ -36,6 +36,7 @@ Available tools:
 - "list_tasks": input is "none".
 - "mark_completed": input is task ID.
 - "search_internet": use when you need to find up-to-date facts, news, or answer questions you don't know. Input is the search query.
+- "save_memory": use to save important facts, user preferences, or completed tasks to long-term memory. Input is the text to save.
 
 JSON EXAMPLE 1 (Using a tool):
 {{
