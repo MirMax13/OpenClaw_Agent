@@ -1,6 +1,7 @@
 import ollama
 import json
 from todo import ToDoManager
+from search import InternetSearchTool
 
 model_name = "gemma:2b"
 agent_name = "Alex"
@@ -14,6 +15,7 @@ class OpenClawAgent:
         self.agent_name = agent_name
         self.role = role
         self.todo = ToDoManager()
+        self.searcher = InternetSearchTool()
 
         self.system_prompt = f"""You are {self.agent_name}, a {self.role}.
 Personality: {system_instructions}
