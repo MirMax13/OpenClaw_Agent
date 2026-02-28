@@ -62,6 +62,10 @@ context = self.vector_db.search_facts(user_message)
         self.memory.append({"role": "user", "content": user_message})
 
         messages_for_llm = self.memory.copy()
+
+        if "Relevant memories:" in context:
+            messages_for_llm.append({"role": "system", "content": f"Long-Term Memory Context:\n{context}"})
+
         messages_for_llm.append({"role": "system", "content": "REMINDER: Output ONLY a valid JSON object. No other text."})
 
         response = ollama.chat(model=self.model_name, messages=messages_for_llm)
