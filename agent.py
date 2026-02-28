@@ -41,7 +41,7 @@ Available tools:
 
 JSON EXAMPLE 1 (Using a tool):
 {{
-  "thought": "User wants to add a task. I hate tasks.",
+  "thought": "I need to use the add_task tool to fulfill the user's request.",
   "tool": "add_task",
   "tool_input": "Set up Streamlit",
   "chat_response": "[Generate your response here based on your assigned personality]"
