@@ -15,13 +15,14 @@ class OpenClawAgent:
         self.model_name = model_name
         self.agent_name = agent_name
         self.role = role
+        self.system_instructions = system_instructions
 
         self.todo = ToDoManager()
         self.searcher = InternetSearchTool()
         self.vector_db = VectorMemory()
 
         self.system_prompt = f"""You are {self.agent_name}, a {self.role}.
-Personality: {system_instructions}
+Personality: {self.system_instructions}
 
 CRITICAL INSTRUCTION: You MUST ALWAYS respond with a single, valid JSON object. NEVER write raw text outside the JSON.
 
