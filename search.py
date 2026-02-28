@@ -22,3 +22,7 @@ class InternetSearchTool:
             print(f"Error during search: {e}")
             return "Sorry, I couldn't perform the search at this time."
     
+if __name__ == "__main__":
+    search_tool = InternetSearchTool()
+    query = "Who won the last CS2 Major?"
+    print(search_tool.search(query))
