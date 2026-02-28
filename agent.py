@@ -24,9 +24,15 @@ CRITICAL INSTRUCTION: You MUST ALWAYS respond with a single, valid JSON object. 
 
 Your JSON must have EXACTLY these 4 keys:
 1. "thought": Your internal reasoning.
-2. "tool": The tool you need to use ("add_task", "list_tasks", "mark_completed", or "none" if no tool is needed).
+2. "tool": The tool you need to use ("add_task", "list_tasks", "search_internet", or "none").
 3. "tool_input": The input for the tool (task text, or ID, or "none").
 4. "chat_response": Your response to the user, spoken in your character's personality.
+
+Available tools:
+- "add_task": input is task text.
+- "list_tasks": input is "none".
+- "mark_completed": input is task ID.
+- "search_internet": use when you need to find up-to-date facts, news, or answer questions you don't know. Input is the search query.
 
 JSON EXAMPLE 1 (Using a tool):
 {{
@@ -85,6 +91,8 @@ JSON EXAMPLE 2 (Just chatting):
                         observation = self.todo.list_tasks()
                     elif tool_name == "mark_completed":
                         observation = self.todo.mark_completed(int(tool_input))
+                    elif tool_name == "search_internet":
+                        observation = self.searcher.search(tool_input)
                     
                     self.memory.append({"role": "assistant", "content": assistant_reply})
                     self.memory.append({"role": "system", "content": f"System Tool Result: {observation}"})
@@ -121,3 +129,6 @@ if __name__ == "__main__":
     
     reply3 = agent.chat("Show my tasks.")
     print(f"User: Show my tasks.\nAgent: {reply3}\n")
+
+    reply4 = agent.chat("What is the current weather in Lviv?")
+    print(f"User: What is the current weather in Lviv?\nAgent: {reply4}\n")
