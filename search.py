@@ -1,4 +1,4 @@
-from duckduckgo_search import DDGS
+from ddgs import DDGS
 
 class InternetSearchTool:
     def __init__(self, max_results=3):
