@@ -57,6 +57,8 @@ JSON EXAMPLE 2 (Just chatting):
         self.memory = [{"role": "system", "content": self.system_prompt}]
     
     def chat(self, user_message):
+context = self.vector_db.search_facts(user_message)
+
         self.memory.append({"role": "user", "content": user_message})
 
         messages_for_llm = self.memory.copy()
