@@ -57,6 +57,12 @@ JSON EXAMPLE 2 (Just chatting):
             start_idx = assistant_reply.find('{')
             end_idx = assistant_reply.rfind('}')
             
+            # Attempt to recover from missing closing brace
+            if start_idx != -1 and end_idx == -1:
+                assistant_reply += "\n}"
+                end_idx = assistant_reply.rfind('}')
+                print("Warning: Missing closing brace detected. Appended closing brace to attempt recovery.")
+
             if start_idx != -1 and end_idx != -1:
                 json_str = assistant_reply[start_idx:end_idx+1]
                 action = json.loads(json_str)
@@ -102,7 +108,7 @@ JSON EXAMPLE 2 (Just chatting):
         return self.memory
     
 if __name__ == "__main__":
-    agent = OpenClawAgent(role = agent_role, system_instructions=system_instructions, agent_name=agent_name)
+    agent = OpenClawAgent(model_name = "llama3", role = agent_role, system_instructions=system_instructions, agent_name=agent_name)
     print("--- Agent Tool Test ---")
     
     reply1 = agent.chat("Hi, how are you?")
