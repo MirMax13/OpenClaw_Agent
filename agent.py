@@ -67,6 +67,17 @@ try:
                 thought = action.get("thought", "")
                 
                 print(f"\nThought: {thought}")
+                
+                observation = ""
+                if tool_name != "none":
+                    print(f"Tool: {tool_name} | Input: {tool_input}")
+                    if tool_name == "add_task":
+                        observation = self.todo.add_task(tool_input)
+                    elif tool_name == "list_tasks":
+                        observation = self.todo.list_tasks()
+                    elif tool_name == "mark_completed":
+                        observation = self.todo.mark_completed(int(tool_input))
+                    
         except (json.JSONDecodeError, ValueError) as e:
             print(f"Parse Error JSON: {e}")
             print(f"Raw assistant reply: {assistant_reply}")
