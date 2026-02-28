@@ -7,7 +7,7 @@ if "agent" not in st.session_state:
     st.session_state.agent = OpenClawAgent(model_name="llama3")
 if "messages" not in st.session_state:
     st.session_state.messages = []
-if "proactive_message" not in st.session_state:
+if "proactive_triggered" not in st.session_state:
     spark_message = st.session_state.agent.trigger_proactivity()
     if spark_message:
         st.session_state.messages.append({"role": "assistant", "content": spark_message})
