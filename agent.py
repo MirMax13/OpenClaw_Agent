@@ -103,6 +103,8 @@ context = self.vector_db.search_facts(user_message)
                         observation = self.todo.mark_completed(int(tool_input))
                     elif tool_name == "search_internet":
                         observation = self.searcher.search(tool_input)
+elif tool_name == "save_memory":
+                        observation = self.vector_db.save_fact(tool_input)
                     
                     self.memory.append({"role": "assistant", "content": assistant_reply})
                     self.memory.append({"role": "system", "content": f"System Tool Result: {observation}"})
