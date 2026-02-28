@@ -56,6 +56,17 @@ JSON EXAMPLE 2 (Just chatting):
 """
         self.memory = [{"role": "system", "content": self.system_prompt}]
     
+    def fix_json_reply(self, reply_text):
+        start_idx = reply_text.find('{')
+        end_idx = reply_text.rfind('}')
+        
+        if start_idx != -1 and end_idx == -1:
+            reply_text += "\n}"
+            end_idx = reply_text.rfind('}')
+            print("Warning: Missing closing brace detected. Appended closing brace to attempt recovery.")
+            
+        return reply_text, start_idx, end_idx
+    
     def chat(self, user_message):
         context = self.vector_db.search_facts(user_message)
 
@@ -72,14 +83,7 @@ JSON EXAMPLE 2 (Just chatting):
         assistant_reply = response['message']['content']
 
         try:
-            start_idx = assistant_reply.find('{')
-            end_idx = assistant_reply.rfind('}')
-            
-            # Attempt to recover from missing closing brace
-            if start_idx != -1 and end_idx == -1:
-                assistant_reply += "\n}"
-                end_idx = assistant_reply.rfind('}')
-                print("Warning: Missing closing brace detected. Appended closing brace to attempt recovery.")
+            assistant_reply, start_idx, end_idx = self.fix_json_reply(assistant_reply)
 
             if start_idx != -1 and end_idx != -1:
                 json_str = assistant_reply[start_idx:end_idx+1]
@@ -144,13 +148,7 @@ CRITICAL: You MUST respond in your standard JSON format. Use tool "none" and put
         assistant_reply = response['message']['content']
 
         try:
-            start_idx = assistant_reply.find('{')
-            end_idx = assistant_reply.rfind('}')
-            
-            if start_idx != -1 and end_idx == -1:
-                assistant_reply += "\n}"
-                end_idx = assistant_reply.rfind('}')
-                print("Warning: Missing closing brace detected in proactivity trigger. Appended closing brace to attempt recovery.")
+            assistant_reply, start_idx, end_idx = self.fix_json_reply(assistant_reply)
 
             if start_idx != -1 and end_idx != -1:
                 json_str = assistant_reply[start_idx:end_idx+1]
@@ -187,11 +185,11 @@ if __name__ == "__main__":
     # reply4 = agent.chat("What is the current weather in Lviv?")
     # print(f"User: What is the current weather in Lviv?\nAgent: {reply4}\n")
 
-    reply1 = agent.chat("Hi, my name is Maxym and my favorite game is CS2.")
-    print(f"User: ...\nAgent: {reply1}\n")
+    # reply1 = agent.chat("Hi, my name is Maxym and my favorite game is CS2.")
+    # print(f"User: ...\nAgent: {reply1}\n")
     
-    reply2 = agent.chat("Save the fact about my favorite game to memory.")
-    print(f"User: ...\nAgent: {reply2}\n")
+    # reply2 = agent.chat("Save the fact about my favorite game to memory.")
+    # print(f"User: ...\nAgent: {reply2}\n")
     
     # reply3 = agent.chat("What game do I like?")
     # print(f"User: ...\nAgent: {reply3}\n")
