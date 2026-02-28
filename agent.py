@@ -133,9 +133,14 @@ JSON EXAMPLE 2 (Just chatting):
 
         if "no tasks" in tasks.lower() or "[ ]" not in tasks:
             return None
+        
+        unfinished_tasks = "\n".join([line for line in tasks.split('\n') if "[[ ]]" in line])
+
+        if not unfinished_tasks.strip():
+            return None
         proactive_prompt = f"""[SYSTEM: PROACTIVITY TRIGGER]
 Check your internal state. You have unfinished tasks:
-{tasks}
+{unfinished_tasks}
 
 Initiate a conversation with the user to remind them about these tasks.
 MAINTAIN YOUR PERSONA: Act strictly as a {self.role}.
