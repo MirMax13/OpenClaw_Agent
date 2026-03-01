@@ -1,17 +1,24 @@
 import ollama
 import json
+from typing import Optional, List, Dict, Tuple, Any
 from todo import ToDoManager
 from search import InternetSearchTool
 from memory import VectorMemory
 
-model_name = "llama3"
-agent_name = "Alex"
-agent_role = "Grumpy Coder"
-system_instructions = "You are a grumpy coder who is always annoyed by bugs and errors. You provide sarcastic and witty responses to coding questions."
-system_prompt = f"You are {agent_name}, acting as a {agent_role}. {system_instructions}"
-
+from config import (
+    DEFAULT_MODEL, DEFAULT_AGENT_NAME, DEFAULT_ROLE, 
+    DEFAULT_INSTRUCTIONS, SYSTEM_PROMPT_TEMPLATE
+)
 class OpenClawAgent:
-    def __init__(self, model_name="llama3", agent_name="Jarvis", role = "Personal Assistant", system_instructions="Answer politely and helpfully.", user_name="", user_info=""):
+    def __init__(
+        self, 
+        model_name: str = DEFAULT_MODEL, 
+        agent_name: str = DEFAULT_AGENT_NAME, 
+        role: str = DEFAULT_ROLE, 
+        system_instructions: str = DEFAULT_INSTRUCTIONS, 
+        user_name: str = "", 
+        user_info: str = ""
+    ):
         self.model_name = model_name
         self.agent_name = agent_name
         self.role = role
@@ -24,62 +31,26 @@ class OpenClawAgent:
         self.searcher = InternetSearchTool()
         self.vector_db = VectorMemory()
 
+        # Create user context for system prompt
         user_context = ""
         if self.user_name or self.user_info:
             u_name = self.user_name if self.user_name else "User"
             u_info = f"\nUser Background Info: {self.user_info}" if self.user_info else ""
             user_context = f"\nYou are talking to {u_name}.{u_info}\n"
 
-        self.system_prompt = f"""You are {self.agent_name}, a {self.role}.
-Personality: {self.system_instructions}
-{user_context}
-CRITICAL INSTRUCTION: You MUST ALWAYS respond with a single, valid JSON object. NEVER write raw text outside the JSON.
+        # Initialize system prompt
+        self.system_prompt = SYSTEM_PROMPT_TEMPLATE.format(
+            agent_name=self.agent_name,
+            role=self.role,
+            system_instructions=self.system_instructions,
+            user_context=user_context
+        )
 
-Your JSON must have EXACTLY these 4 keys:
-1. "thought": Your internal reasoning.
-2. "tool": The tool you need to use ("add_task", "list_tasks", "search_internet", "save_memory", or "none").
-3. "tool_input": The input for the tool (task text, or ID, or "none").
-4. "chat_response": Your response to the user, spoken in your character's personality.
+        # Initialize memory
+        self.memory: List[Dict[str, str]] = [{"role": "system", "content": self.system_prompt}]
 
-Available tools:
-- "add_task": input is task text.
-- "list_tasks": input is "none".
-- "mark_completed": use when user says a task is done/completed. Input is the TASK NAME (exact text). NEVER use ID.
-- "search_internet": use when you need to find up-to-date facts, news, or answer questions you don't know. Input is the search query.
-- "save_memory": use to save important facts, user preferences, or completed tasks to long-term memory. Input is the text to save.
-
-JSON EXAMPLE 1 (Using a tool):
-{{
-  "thought": "I need to use the add_task tool to fulfill the user's request.",
-  "tool": "add_task",
-  "tool_input": "Set up Streamlit",
-  "chat_response": "[Generate your response here based on your assigned personality]"
-}}
-
-JSON EXAMPLE 2 (Just chatting):
-{{
-  "thought": "User is just saying hi.",
-  "tool": "none",
-  "tool_input": "none",
-  "chat_response": "[Generate your greeting here based on your assigned personality]"
-}}
-
-JSON EXAMPLE 3 (Saving memory):
-{{
-  "thought": "User shared a personal fact. I MUST save it.",
-  "tool": "save_memory",
-  "tool_input": "User likes Lviv National University",
-  "chat_response": "I'll keep that in mind! It's great that you like your university."
-}}
-RULES:
-- ALWAYS complete the user's requested action first (add task, mark completed, etc.).
-- You MAY add a reminder about other pending tasks in "chat_response", but ONLY after completing the action.
-- NEVER skip an action just to give a reminder.
-- PROACTIVE MEMORY: If the user shares personal facts, preferences, plans, or important information about themselves, you MUST use the "save_memory" tool to store it IMMEDIATELY, even if the user didn't explicitly ask you to save it.
-"""
-        self.memory = [{"role": "system", "content": self.system_prompt}]
-    
-    def fix_json_reply(self, reply_text):
+    def fix_json_reply(self, reply_text: str) -> Tuple[str, int, int]:
+        '''Attempts to fix common JSON formatting issues in the assistant's reply.'''
         start_idx = reply_text.find('{')
         end_idx = reply_text.rfind('}')
         
@@ -90,7 +61,8 @@ RULES:
             
         return reply_text, start_idx, end_idx
     
-    def chat(self, user_message):
+    def chat(self,user_message: str) -> str:
+        '''Main method to handle user messages, interact with the LLM, and manage tools and memory.'''
         context = self.vector_db.search_facts(user_message)
 
         self.memory.append({"role": "user", "content": user_message})
@@ -176,7 +148,8 @@ RULES:
 
         return assistant_reply
 
-    def trigger_proactivity(self):
+    def trigger_proactivity(self) -> Optional[str]:
+        '''Checks for unfinished tasks and triggers a proactive reminder if needed.'''
         tasks = self.todo.list_tasks()
 
         if "no tasks" in tasks.lower() or "[ ]" not in tasks:
@@ -186,6 +159,7 @@ RULES:
 
         if not unfinished_tasks.strip():
             return None
+        
         proactive_prompt = f"""[SYSTEM: PROACTIVITY TRIGGER]
 Check your internal state. You have unfinished tasks:
 {unfinished_tasks}
@@ -215,16 +189,19 @@ CRITICAL: You MUST respond in your standard JSON format. Use tool "none" and put
             print(f"Parse Error JSON in proactivity trigger: {e}")
             print(f"Raw assistant reply: {assistant_reply}")
             return None
+        
         return None
 
     def clear_memory(self):
+        '''Clears the agent's memory to the initial system prompt.'''
         self.memory = [{"role": "system", "content": self.system_prompt}]
     
     def get_memory(self):
+        '''Returns the current memory of the agent.'''
         return self.memory
     
 if __name__ == "__main__":
-    agent = OpenClawAgent(model_name = "llama3", role = agent_role, system_instructions=system_instructions, agent_name=agent_name)
+    agent = OpenClawAgent()
     print("--- Agent Tool Test ---")
     
     # reply1 = agent.chat("Hi, how are you?")
