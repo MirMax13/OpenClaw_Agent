@@ -75,12 +75,13 @@ with tab1:
             st.session_state.messages.append({"role": "assistant", "content": response})
             st.rerun()
     with col_todo:
-        st.subheader("Live To-Do List")
+        st.subheader("📋 Live To-Do List")
         tasks = st.session_state.agent.todo.list_tasks()
         if "no tasks" in tasks:
             st.info("No active tasks.")
         else:
-            st.markdown(tasks)
+            display_tasks = tasks.replace("[[x]]", "✅").replace("[[ ]]", "⬜")
+            st.markdown(display_tasks)
 
 with tab2:
     st.subheader("Under the Hood (Debug and Memory)")
