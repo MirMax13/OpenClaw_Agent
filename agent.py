@@ -109,6 +109,9 @@ RULES:
                         observation = self.todo.add_task(tool_input)
                     elif tool_name == "list_tasks":
                         observation = self.todo.list_tasks()
+                        # self.memory.append({"role": "assistant", "content": assistant_reply})
+                        # self.memory.append({"role": "system", "content": f"System Tool Result: {observation}"})
+                        # return f"{chat_response}\n\n[System]: {observation}"
                     elif tool_name == "mark_completed":
                         observation = self.todo.mark_completed(tool_input)
                     elif tool_name == "search_internet":
@@ -234,5 +237,8 @@ if __name__ == "__main__":
     else:
         print("\n[Proactivity Triggered]: No proactive message generated.")
 
-    reply1 = agent.chat("Hi, let's mark task 1 as completed.")
-    print(f"User: Hi, let's mark task 1 as completed.\nAgent: {reply1}\n")
+    reply1 = agent.chat("Add new task: Buy groceries.")
+    print(f"User: Add new task: Buy groceries.\nAgent: {reply1}\n")
+
+    reply2 = agent.chat("I completed task Buy groceries.")
+    print(f"User: I completed task Buy groceries.\nAgent: {reply2}\n")
