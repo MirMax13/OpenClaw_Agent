@@ -122,7 +122,7 @@ RULES:
                     self.memory.append({"role": "assistant", "content": assistant_reply})
                     
                     if tool_name == "search_internet":
-                        follow_up = f"Tool '{tool_name}' returned this data:\n{observation}\n\nProvide the final answer to my original question using this data. DO NOT use tools (set tool to 'none')."
+                        follow_up = f"Tool '{tool_name}' returned this data:\n{observation}\n\nAnswer my original question. Use the search data if it's helpful. If the data is irrelevant or unhelpful, just use your own knowledge to answer. DO NOT use tools (set tool to 'none')."
                         self.memory.append({"role": "user", "content": follow_up})
 
                         messages_step2 = self.memory.copy()
