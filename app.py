@@ -117,6 +117,11 @@ with tab2:
         st.subheader("Long-Term Memory")
         st.caption("Vector DB contents (ChromaDB)")
 
+        if st.button("🗑️ Clear Vector DB"):
+            if hasattr(st.session_state.agent.vector_db, 'clear_database'):
+                st.session_state.agent.vector_db.clear_database()
+                st.success("Long-Term Memory has been wiped!")
+                st.rerun()
         with st.expander("👀 View DB Chunks", expanded=False):
             try:
                 facts = st.session_state.agent.vector_db.get_all_facts()
