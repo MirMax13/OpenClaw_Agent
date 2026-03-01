@@ -54,6 +54,11 @@ JSON EXAMPLE 2 (Just chatting):
   "tool_input": "none",
   "chat_response": "[Generate your greeting here based on your assigned personality]"
 }}
+
+RULES:
+- ALWAYS complete the user's requested action first (add task, mark completed, etc.).
+- You MAY add a reminder about other pending tasks in "chat_response", but ONLY after completing the action.
+- NEVER skip an action just to give a reminder.
 """
         self.memory = [{"role": "system", "content": self.system_prompt}]
     
