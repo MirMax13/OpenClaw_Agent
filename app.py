@@ -41,6 +41,10 @@ with st.sidebar:
             user_info=new_user_info
         )
         
+        st.session_state.messages = []
+        if "proactive_triggered" in st.session_state:
+            del st.session_state["proactive_triggered"]
+        st.rerun()
 tab1, tab2 = st.tabs(["Page A: Agent Interface", "Page B: Under he Hood"])
 
 with tab1:
