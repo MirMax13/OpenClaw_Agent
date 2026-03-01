@@ -22,7 +22,12 @@ class ToDoManager:
         
     def add_task(self, task):
         data = self.load()
+        task_lower = task.lower().strip()
 
+        # Simple check to prevent adding duplicate tasks
+        for existing_task in data["tasks"]:
+            if existing_task["task"].lower().strip() == task_lower and not existing_task["completed"]:
+                return f"Task '{existing_task['task']}' already exists and is not completed yet."
         task_id = len(data["tasks"]) + 1
         data["tasks"].append({"id": task_id, "task": task, "completed": False})
         self.save(data)
