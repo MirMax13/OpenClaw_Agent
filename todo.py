@@ -39,16 +39,25 @@ class ToDoManager:
             result += f"{task['id']}. [{status}] {task['task']}\n"
         return result
     
-    def mark_completed(self, task_id):
+    def mark_completed(self, task_name):
         data = self.load()
+        task_name_lower = task_name.lower().strip()
         for task in data["tasks"]:
-            if task["id"] == task_id:
+            if task["task"].lower().strip() == task_name_lower:
                 if task["completed"]:
-                    return f"Task with ID {task_id} is already marked as completed."
+                    return f"Task '{task['task']}' is already marked as completed."
                 task["completed"] = True
                 self.save(data)
-                return f"Task marked as completed: {task['task']} (ID: {task_id})"
-        return f"Task with ID {task_id} not found."
+                return f"Task marked as completed: {task['task']}"
+        # If exact match not found, try partial match
+        for task in data["tasks"]:
+            if task_name_lower in task["task"].lower():
+                if task["completed"]:
+                    return f"Task '{task['task']}' is already marked as completed."
+                task["completed"] = True
+                self.save(data)
+                return f"Task marked as completed: {task['task']}"
+        return f"Task '{task_name}' not found."
     
 if __name__ == "__main__":
     manager = ToDoManager()
@@ -56,5 +65,5 @@ if __name__ == "__main__":
     print(manager.add_task("Buy groceries"))
     print(manager.add_task("Finish coding project"))
     print(manager.list_tasks())
-    print(manager.mark_completed(1))
+    print(manager.mark_completed("Buy groceries"))
     print(manager.list_tasks())
