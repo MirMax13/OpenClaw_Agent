@@ -42,21 +42,24 @@ class ToDoManager:
     def mark_completed(self, task_name):
         data = self.load()
         task_name_lower = task_name.lower().strip()
+        
+        # First search in uncompleted
         for task in data["tasks"]:
-            if task["task"].lower().strip() == task_name_lower:
-                if task["completed"]:
-                    return f"Task '{task['task']}' is already marked as completed."
+            if task["task"].lower().strip() == task_name_lower and not task["completed"]:
                 task["completed"] = True
                 self.save(data)
                 return f"Task marked as completed: {task['task']}"
         # If exact match not found, try partial match
         for task in data["tasks"]:
-            if task_name_lower in task["task"].lower():
-                if task["completed"]:
-                    return f"Task '{task['task']}' is already marked as completed."
+            if task_name_lower in task["task"].lower() and not task["completed"]:
                 task["completed"] = True
                 self.save(data)
                 return f"Task marked as completed: {task['task']}"
+        
+        # Finally, search if it's already in completed
+        for task in data["tasks"]:
+            if task["task"].lower().strip() == task_name_lower and task["completed"]:
+                return f"Task '{task['task']}' is already marked as completed."
         return f"Task '{task_name}' not found."
     
 if __name__ == "__main__":
