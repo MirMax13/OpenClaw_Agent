@@ -17,6 +17,15 @@ if "proactive_triggered" not in st.session_state:
 with st.sidebar:
     st.header("Configuration")
 
+    st.subheader("👤 User Profile")
+    current_u_name = getattr(st.session_state.agent, "user_name", "")
+    current_u_info = getattr(st.session_state.agent, "user_info", "")
+    
+    new_user_name = st.text_input("Your Name", value=current_u_name, max_chars=50)
+    new_user_info = st.text_area("About You (Basic Info)", value=current_u_info, max_chars=200)
+
+    st.divider()
+
     st.subheader("Agent Persona")
     new_agent_name = st.text_input("Agent Name", value=st.session_state.agent.agent_name)
     new_agent_role = st.text_area("Agent Role", value=st.session_state.agent.role)
