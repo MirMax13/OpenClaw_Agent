@@ -113,7 +113,7 @@ JSON EXAMPLE 2 (Just chatting):
                     
                     self.memory.append({"role": "assistant", "content": assistant_reply})
                     
-                    if tool_name in ["search_internet", "save_memory"]:
+                    if tool_name == "search_internet":
                         follow_up = f"Tool '{tool_name}' returned this data:\n{observation}\n\nProvide the final answer to my original question using this data. DO NOT use tools (set tool to 'none')."
                         self.memory.append({"role": "user", "content": follow_up})
 
