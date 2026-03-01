@@ -36,6 +36,15 @@ class VectorMemory:
             return []
         results = self.collection.get()
         return results['documents']
+    def clear_database(self):
+        try:
+            all_ids = self.collection.get()['ids']
+            if all_ids:
+                self.collection.delete(ids=all_ids)
+                
+            return "Memory cleared successfully."
+        except Exception as e:
+            return f"Error: {e}"
 
 if __name__ == "__main__":
     memory = VectorMemory()
