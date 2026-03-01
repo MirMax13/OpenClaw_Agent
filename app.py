@@ -90,21 +90,23 @@ with tab2:
     with col_short_mem:
         st.subheader("Short-Term Memory")
         st.caption("Active conversation context sent to the LLM")
-        st.json(st.session_state.agent.get_memory())
+        with st.expander("👀 View Raw JSON", expanded=False):
+            st.json(st.session_state.agent.get_memory())
 
     with col_long_mem:
         st.subheader("Long-Term Memory")
         st.caption("Vector DB contents (ChromaDB)")
 
-        try:
-            facts = st.session_state.agent.vector_db.get_all_facts()
-            if not facts:
-                st.info("Vector DB is empty.")
-            else:
-                for i, fact in enumerate(facts):
-                    st.code(f"Chunk {i+1}:\n{fact}")
-        except Exception as e:
-            st.error(f"Could not load vector DB facts: {e}")
+        with st.expander("👀 View DB Chunks", expanded=False):
+            try:
+                facts = st.session_state.agent.vector_db.get_all_facts()
+                if not facts:
+                    st.info("Vector DB is empty.")
+                else:
+                    for i, fact in enumerate(facts):
+                        st.code(f"Chunk {i+1}:\n{fact}")
+            except Exception as e:
+                st.error(f"Could not load vector DB facts: {e}")
 
     st.divider()
     st.subheader("🕵️ Internal Monologue (Bonus)")
