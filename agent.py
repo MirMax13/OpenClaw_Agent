@@ -11,19 +11,28 @@ system_instructions = "You are a grumpy coder who is always annoyed by bugs and 
 system_prompt = f"You are {agent_name}, acting as a {agent_role}. {system_instructions}"
 
 class OpenClawAgent:
-    def __init__(self, model_name="llama3", agent_name="Jarvis", role = "Personal Assistant", system_instructions="Answer politely and helpfully."):
+    def __init__(self, model_name="llama3", agent_name="Jarvis", role = "Personal Assistant", system_instructions="Answer politely and helpfully.", user_name="", user_info=""):
         self.model_name = model_name
         self.agent_name = agent_name
         self.role = role
         self.system_instructions = system_instructions
 
+        self.user_name = user_name
+        self.user_info = user_info
+
         self.todo = ToDoManager()
         self.searcher = InternetSearchTool()
         self.vector_db = VectorMemory()
 
+        user_context = ""
+        if self.user_name or self.user_info:
+            u_name = self.user_name if self.user_name else "User"
+            u_info = f"\nUser Background Info: {self.user_info}" if self.user_info else ""
+            user_context = f"\nYou are talking to {u_name}.{u_info}\n"
+
         self.system_prompt = f"""You are {self.agent_name}, a {self.role}.
 Personality: {self.system_instructions}
-
+{user_context}
 CRITICAL INSTRUCTION: You MUST ALWAYS respond with a single, valid JSON object. NEVER write raw text outside the JSON.
 
 Your JSON must have EXACTLY these 4 keys:
