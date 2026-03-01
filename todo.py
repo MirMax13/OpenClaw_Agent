@@ -38,7 +38,7 @@ class ToDoManager:
         data = self.load()
         if not data["tasks"]:
             return "No tasks found."
-        result = "To-Do List:\n"
+        result = ""
         for task in data["tasks"]:
             status = "[x]" if task["completed"] else "[ ]"
             result += f"{task['id']}. [{status}] {task['task']}\n"
