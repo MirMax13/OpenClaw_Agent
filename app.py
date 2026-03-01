@@ -1,5 +1,6 @@
 import streamlit as st
 from agent import OpenClawAgent
+import json
 
 st.set_page_config(page_title="OpenClaw Agent", page_icon="🤖",layout="wide")
 
@@ -83,3 +84,16 @@ with tab2:
                     st.code(f"Chunk {i+1}:\n{fact}")
         except Exception as e:
             st.error(f"Could not load vector DB facts: {e}")
+
+    st.divider()
+    st.subheader("🕵️ Internal Monologue (Bonus)")
+    st.caption("A live log of the agent's thought process.")
+    
+    for msg in st.session_state.agent.get_memory():
+        if msg["role"] == "assistant":
+            try:
+                data = json.loads(msg["content"])
+                if "thought" in data and data["thought"]:
+                    st.info(f"**Thinking:** {data['thought']}")
+            except:
+                pass
