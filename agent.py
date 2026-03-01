@@ -112,6 +112,29 @@ JSON EXAMPLE 2 (Just chatting):
                         observation = self.vector_db.save_fact(tool_input)
                     
                     self.memory.append({"role": "assistant", "content": assistant_reply})
+                    
+                    if tool_name in ["search_internet", "save_memory"]:
+                        follow_up = f"Tool '{tool_name}' returned this data:\n{observation}\n\nProvide the final answer to my original question using this data. DO NOT use tools (set tool to 'none')."
+                        self.memory.append({"role": "user", "content": follow_up})
+
+                        messages_step2 = self.memory.copy()
+                        messages_step2.append({"role": "system", "content": "REMINDER: Output ONLY a valid JSON object."})
+                        
+                        resp2 = ollama.chat(model=self.model_name, messages=messages_step2)
+                        reply2 = resp2['message']['content']
+                        
+                        try:
+                            reply2, s2, e2 = self.fix_json_reply(reply2)
+                            if s2 != -1 and e2 != -1:
+                                action2 = json.loads(reply2[s2:e2+1])
+                                final_chat = action2.get("chat_response", "")
+                                
+                                self.memory.append({"role": "assistant", "content": reply2})
+                                return final_chat
+                        except Exception as e:
+                            print(f"Error parsing Step 2: {e}")
+                            return "I found the info, but my brain crashed processing it."
+                    
                     self.memory.append({"role": "system", "content": f"System Tool Result: {observation}"})
 
                     return f"{chat_response}\n\n[System]: {observation}"
