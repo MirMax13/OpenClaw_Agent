@@ -53,20 +53,25 @@ with tab1:
     with col_chat:
         st.subheader("Chat Window")
 
-        for msg in st.session_state.messages:
-            with st.chat_message(msg["role"]):
-                st.markdown(msg["content"])
+        chat_container = st.container()
+
+        with chat_container:
+            for msg in st.session_state.messages:
+                with st.chat_message(msg["role"]):
+                    st.markdown(msg["content"])
         
         prompt = st.chat_input("Type your message here...")
 
         if prompt:
             st.session_state.messages.append({"role": "user", "content": prompt})
-            with st.chat_message("user"):
-                st.markdown(prompt)
-            
-            with st.chat_message("assistant"):
-                response = st.session_state.agent.chat(prompt)
-                st.markdown(response)
+            with chat_container:
+                with st.chat_message("user"):
+                    st.markdown(prompt)
+                
+                with st.chat_message("assistant"):
+                    with st.spinner("Agent is thinking..."):
+                        response = st.session_state.agent.chat(prompt)
+                    st.markdown(response)
             st.session_state.messages.append({"role": "assistant", "content": response})
             st.rerun()
     with col_todo:
