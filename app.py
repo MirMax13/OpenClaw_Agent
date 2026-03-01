@@ -76,7 +76,7 @@ with tab2:
 
         try:
             facts = st.session_state.agent.vector_db.get_all_facts()
-            if not facts or not facts[0]:
+            if not facts:
                 st.info("Vector DB is empty.")
             else:
                 for i, fact in enumerate(facts):
