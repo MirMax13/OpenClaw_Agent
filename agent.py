@@ -64,10 +64,18 @@ JSON EXAMPLE 2 (Just chatting):
   "chat_response": "[Generate your greeting here based on your assigned personality]"
 }}
 
+JSON EXAMPLE 3 (Saving memory):
+{{
+  "thought": "User shared a personal fact. I MUST save it.",
+  "tool": "save_memory",
+  "tool_input": "User likes Lviv National University",
+  "chat_response": "I'll keep that in mind! It's great that you like your university."
+}}
 RULES:
 - ALWAYS complete the user's requested action first (add task, mark completed, etc.).
 - You MAY add a reminder about other pending tasks in "chat_response", but ONLY after completing the action.
 - NEVER skip an action just to give a reminder.
+- PROACTIVE MEMORY: If the user shares personal facts, preferences, plans, or important information about themselves, you MUST use the "save_memory" tool to store it IMMEDIATELY, even if the user didn't explicitly ask you to save it.
 """
         self.memory = [{"role": "system", "content": self.system_prompt}]
     
