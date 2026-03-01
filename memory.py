@@ -33,7 +33,7 @@ class VectorMemory:
     
     def get_all_facts(self):
         if self.collection.count() == 0:
-            return "No facts in memory."
+            return []
         results = self.collection.get()
         return results['documents']
 
