@@ -36,8 +36,11 @@ with st.sidebar:
             model_name="llama3",
             agent_name=new_agent_name,
             role=new_agent_role,
-            system_instructions=new_instructions
-            )
+            system_instructions=new_instructions,
+            user_name=new_user_name,
+            user_info=new_user_info
+        )
+        
 tab1, tab2 = st.tabs(["Page A: Agent Interface", "Page B: Under he Hood"])
 
 with tab1:
