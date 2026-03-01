@@ -85,6 +85,25 @@ with tab1:
 with tab2:
     st.subheader("Under the Hood (Debug and Memory)")
 
+    st.subheader("🕵️ Internal Monologue (Bonus)")
+    st.caption("A live log of the agent's thought process.")
+    
+    monologue_found = False
+    for msg in st.session_state.agent.get_memory():
+        if msg["role"] == "assistant":
+            try:
+                data = json.loads(msg["content"])
+                if "thought" in data and data["thought"]:
+                    st.info(f"**Thinking:** {data['thought']}")
+                    monologue_found = True
+            except:
+                pass
+                
+    if not monologue_found:
+        st.write("*No thoughts yet. Start chatting!*")
+
+    st.divider()
+
     col_short_mem, col_long_mem = st.columns(2)
 
     with col_short_mem:
@@ -107,16 +126,3 @@ with tab2:
                         st.code(f"Chunk {i+1}:\n{fact}")
             except Exception as e:
                 st.error(f"Could not load vector DB facts: {e}")
-
-    st.divider()
-    st.subheader("🕵️ Internal Monologue (Bonus)")
-    st.caption("A live log of the agent's thought process.")
-    
-    for msg in st.session_state.agent.get_memory():
-        if msg["role"] == "assistant":
-            try:
-                data = json.loads(msg["content"])
-                if "thought" in data and data["thought"]:
-                    st.info(f"**Thinking:** {data['thought']}")
-            except:
-                pass
