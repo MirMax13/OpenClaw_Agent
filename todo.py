@@ -28,7 +28,7 @@ class ToDoManager:
         for existing_task in data["tasks"]:
             if existing_task["task"].lower().strip() == task_lower and not existing_task["completed"]:
                 return f"Task '{existing_task['task']}' already exists and is not completed yet."
-        task_id = len(data["tasks"]) + 1
+        task_id = max([t["id"] for t in data["tasks"]], default=0) + 1
         data["tasks"].append({"id": task_id, "task": task, "completed": False})
         self.save(data)
         message = f"Task added: {task} (ID: {task_id})"
