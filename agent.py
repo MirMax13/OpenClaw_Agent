@@ -35,7 +35,7 @@ Your JSON must have EXACTLY these 4 keys:
 Available tools:
 - "add_task": input is task text.
 - "list_tasks": input is "none".
-- "mark_completed": input is task ID.
+- "mark_completed": use when user says a task is done/completed. Input is the TASK NAME (exact text). NEVER use ID.
 - "search_internet": use when you need to find up-to-date facts, news, or answer questions you don't know. Input is the search query.
 - "save_memory": use to save important facts, user preferences, or completed tasks to long-term memory. Input is the text to save.
 
