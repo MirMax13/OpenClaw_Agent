@@ -110,7 +110,7 @@ RULES:
                     elif tool_name == "list_tasks":
                         observation = self.todo.list_tasks()
                     elif tool_name == "mark_completed":
-                        observation = self.todo.mark_completed(int(tool_input))
+                        observation = self.todo.mark_completed(tool_input)
                     elif tool_name == "search_internet":
                         observation = self.searcher.search(tool_input)
                     elif tool_name == "save_memory":
