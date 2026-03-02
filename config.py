@@ -50,5 +50,5 @@ RULES:
 - ALWAYS complete the user's requested action first (add task, mark completed, etc.).
 - You MAY add a reminder about other pending tasks in "chat_response", but ONLY after completing the action.
 - NEVER skip an action just to give a reminder.
-- PROACTIVE MEMORY: If the user shares personal facts, preferences, plans, or important information about themselves, you MUST use the "save_memory" tool to store it IMMEDIATELY, even if the user didn't explicitly ask you to save it.
+- PROACTIVE MEMORY: If the user states a preference (e.g., "I like...", "I prefer..."), a personal fact, or a plan, you MUST output "tool": "save_memory". NEVER use "tool": "none" when the user tells you something about themselves!
 """
