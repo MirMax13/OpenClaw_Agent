@@ -79,9 +79,20 @@ with tab1:
         tasks = st.session_state.agent.todo.list_tasks()
         if "no tasks" in tasks:
             st.info("No active tasks.")
-        else:
-            display_tasks = tasks.replace("[[x]]", "✅").replace("[[ ]]", "⬜")
-            st.markdown(display_tasks)
+        cleaned_lines = []
+        for line in tasks.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+
+            # Remove leading "<id>. " if present
+            if ". " in line and line.split(". ", 1)[0].isdigit():
+                line = line.split(". ", 1)[1]
+
+            line = line.replace("[[x]]", "✅").replace("[[ ]]", "⬜")
+            cleaned_lines.append(line)
+
+        st.markdown("  \n".join(cleaned_lines))
 
 with tab2:
     st.subheader("Under the Hood (Debug and Memory)")
