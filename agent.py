@@ -7,7 +7,7 @@ from memory import VectorMemory
 
 from config import (
     DEFAULT_MODEL, DEFAULT_AGENT_NAME, DEFAULT_ROLE, 
-    DEFAULT_INSTRUCTIONS, SYSTEM_PROMPT_TEMPLATE
+    DEFAULT_INSTRUCTIONS, SYSTEM_PROMPT_TEMPLATE, GEMMA_SYSTEM_PROMPT_TEMPLATE
 )
 class OpenClawAgent:
     def __init__(
@@ -39,12 +39,18 @@ class OpenClawAgent:
             user_context = f"\nYou are talking to {u_name}.{u_info}\n"
 
         # Initialize system prompt
-        self.system_prompt = SYSTEM_PROMPT_TEMPLATE.format(
-            agent_name=self.agent_name,
-            role=self.role,
-            system_instructions=self.system_instructions,
-            user_context=user_context
-        )
+        if "gemma" in self.model_name.lower() or "2b" in self.model_name.lower():
+            self.system_prompt = GEMMA_SYSTEM_PROMPT_TEMPLATE.format(
+                agent_name=self.agent_name,
+                role=self.role,
+                system_instructions=self.system_instructions
+            )
+            self.system_prompt = SYSTEM_PROMPT_TEMPLATE.format(
+                agent_name=self.agent_name,
+                role=self.role,
+                system_instructions=self.system_instructions,
+                user_context=user_context
+            )
 
         # Initialize memory
         self.memory: List[Dict[str, str]] = [{"role": "system", "content": self.system_prompt}]
