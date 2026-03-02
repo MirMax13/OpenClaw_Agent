@@ -59,11 +59,11 @@ class ToDoManager:
     def mark_completed(self, task_name: str) -> str:
         '''Mark an uncompleted task as completed using exact or partial match.'''
         data = self.load()
-        task_name_lower = task_name.lower().strip()
+        task_name_lower = task_name.lower().strip(" '\"")
         
         # First search in uncompleted
         for task in data["tasks"]:
-            if task["task"].lower().strip() == task_name_lower and not task["completed"]:
+            if task["task"].lower().strip(" '\"") == task_name_lower and not task["completed"]:
                 task["completed"] = True
                 self.save(data)
                 return f"Task marked as completed: {task['task']}"
@@ -76,7 +76,7 @@ class ToDoManager:
         
         # Finally, search if it's already in completed
         for task in data["tasks"]:
-            if task["task"].lower().strip() == task_name_lower and task["completed"]:
+            if task["task"].lower().strip(" '\"") == task_name_lower and task["completed"]:
                 return f"Task '{task['task']}' is already marked as completed."
         return f"Task '{task_name}' not found."
     
