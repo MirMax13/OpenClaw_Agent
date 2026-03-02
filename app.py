@@ -46,7 +46,7 @@ with st.sidebar:
         if "proactive_triggered" in st.session_state:
             del st.session_state["proactive_triggered"]
         st.rerun()
-tab1, tab2 = st.tabs(["Page A: Agent Interface", "Page B: Under he Hood"])
+tab1, tab2 = st.tabs(["Page A: Agent Interface", "Page B: Under the Hood"])
 
 with tab1:
     col_chat, col_todo = st.columns([7, 3])
@@ -98,7 +98,7 @@ with tab1:
 with tab2:
     st.subheader("Under the Hood (Debug and Memory)")
 
-    st.subheader("🕵️ Internal Monologue (Bonus)")
+    st.subheader("🕵️ Internal Monologue")
     st.caption("A live log of the agent's thought process.")
     
     monologue_found = False
