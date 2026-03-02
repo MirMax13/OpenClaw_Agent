@@ -139,7 +139,7 @@ class OpenClawAgent:
                             print(f"Error parsing Step 2: {e}")
                             return "I found the info, but my brain crashed processing it."
                     
-                    self.memory.append({"role": "system", "content": f"System Tool Result: {observation}"})
+                    self.memory.append({"role": "user", "content": f"[System: Tool execution result - {observation}]"})
 
                     return f"{chat_response}\n\n[System]: {observation}"
                 
