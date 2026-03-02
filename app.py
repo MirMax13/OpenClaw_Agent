@@ -1,11 +1,12 @@
 import streamlit as st
 from agent import OpenClawAgent
 import json
+from config import DEFAULT_MODEL
 
 st.set_page_config(page_title="OpenClaw Agent", page_icon="🤖",layout="wide")
 
 if "agent" not in st.session_state:
-    st.session_state.agent = OpenClawAgent(model_name="llama3")
+    st.session_state.agent = OpenClawAgent(model_name=DEFAULT_MODEL)
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "proactive_triggered" not in st.session_state:
@@ -33,7 +34,7 @@ with st.sidebar:
 
     if st.button("Apply and Restart"):
         st.session_state.agent = OpenClawAgent(
-            model_name="llama3",
+            model_name=DEFAULT_MODEL,
             agent_name=new_agent_name,
             role=new_agent_role,
             system_instructions=new_instructions,
