@@ -45,6 +45,7 @@ class OpenClawAgent:
                 role=self.role,
                 system_instructions=self.system_instructions
             )
+        else:
             self.system_prompt = SYSTEM_PROMPT_TEMPLATE.format(
                 agent_name=self.agent_name,
                 role=self.role,
