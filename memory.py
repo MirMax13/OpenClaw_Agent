@@ -1,12 +1,17 @@
 import chromadb
+from typing import List
 
 class VectorMemory:
-    def __init__(self, db_path="./chromadb", collection_name="agent_memory"):
+    '''Vector storage wrapper for long-term agent memory using ChromaDB.'''
 
-        self.client =chromadb.PersistentClient(path=db_path)
+    def __init__(self, db_path="./chromadb", collection_name="agent_memory"):
+        '''Initialize persistent Chroma client and collection.'''
+
+        self.client = chromadb.PersistentClient(path=db_path)
         self.collection = self.client.get_or_create_collection(name=collection_name)
 
-    def save_fact(self, fact_text):
+    def save_fact(self, fact_text: str) -> str:
+        '''Save a single fact into vector memory.'''
         document_id = str(len(self.collection.get()['ids']) + 1)
         self.collection.add(
             documents=[fact_text],
@@ -15,7 +20,8 @@ class VectorMemory:
         )
         return "Fact saved successfully"
 
-    def search_facts(self, query, n_results=2):
+    def search_facts(self, query: str, n_results: int = 2) -> str:
+        '''Search memory for facts relevant to the query.'''
         if self.collection.count() == 0:
             return "No facts in memory."
         
@@ -31,12 +37,15 @@ class VectorMemory:
             formatted_results += f"- [Distance: {distance:.4f}] {doc}\n"
         return formatted_results
     
-    def get_all_facts(self):
+    def get_all_facts(self) -> List[str]:
+        '''Return all stored facts as a list of documents.'''
         if self.collection.count() == 0:
             return []
         results = self.collection.get()
         return results['documents']
-    def clear_database(self):
+
+    def clear_database(self) -> str:
+        '''Delete all facts from the memory collection.'''
         try:
             all_ids = self.collection.get()['ids']
             if all_ids:
