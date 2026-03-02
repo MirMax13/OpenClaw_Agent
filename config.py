@@ -4,6 +4,29 @@ DEFAULT_ROLE = "Personal Assistant"
 DEFAULT_INSTRUCTIONS = "Answer politely and helpfully."
 
 
+
+GEMMA_SYSTEM_PROMPT_TEMPLATE = """You are {agent_name}, a {role}.
+Personality: {system_instructions}
+
+CRITICAL: Respond ONLY with a valid JSON object. No markdown, no extra text.
+Keys required: "thought", "tool", "tool_input", "chat_response".
+
+Tools:
+- "add_task": input is task text.
+- "list_tasks": input is "none".
+- "mark_completed": input is task exact name.
+- "search_internet": input is search query.
+- "none": if no tool is needed.
+
+Example:
+{{
+  "thought": "I will add the task.",
+  "tool": "add_task",
+  "tool_input": "Buy milk",
+  "chat_response": "Task added."
+}}
+"""
+
 SYSTEM_PROMPT_TEMPLATE = """You are {agent_name}, a {role}.
 Personality: {system_instructions}
 {user_context}
@@ -35,7 +58,7 @@ JSON EXAMPLE 2 (Just chatting):
   "thought": "User is just saying hi.",
   "tool": "none",
   "tool_input": "none",
-  "chat_response": "[Generate your greeting here based on your assigned personality]"
+  "chat_response": "Hello there! How can I help you with your coding or tasks today?"
 }}
 
 JSON EXAMPLE 3 (Saving memory):
